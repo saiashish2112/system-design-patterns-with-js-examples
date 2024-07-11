@@ -174,13 +174,13 @@ export default Posts;
 
 Deploying this `MERN stack` application on AWS involves several steps:
 
-### `a. **AWS EC2 Instance for Node.js Backend**`
+### `a. AWS EC2 Instance for Node.js Backend`
 
 1. Launch an EC2 instance.
 2. SSH into the instance and set up Node.js and your application.
 3. Install necessary dependencies and run the server.
 
-### `b. **AWS S3 and CloudFront for React Frontend**`
+### `b. AWS S3 and CloudFront for React Frontend`
 
 1. Build the React application.
 
