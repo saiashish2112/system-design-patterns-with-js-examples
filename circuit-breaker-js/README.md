@@ -192,7 +192,7 @@ Deploying this `MERN stack` application on AWS involves several steps:
 3. Configure the S3 bucket for static website hosting.
 4. Use CloudFront to distribute the React app globally.
 
-### `c. **API Gateway and Lambda (Optional)**`
+### `c. API Gateway and Lambda (Optional)`
 
 You could use API Gateway to manage the API endpoints and AWS Lambda functions for the backend, adding more scalability and resilience.
 
