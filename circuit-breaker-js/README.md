@@ -28,12 +28,16 @@ npm install express opossum axios
 const express = require("express");
 const axios = require("axios");
 const CircuitBreaker = require("opossum");
+const cors = require("cors");
 
 const app = express();
 const port = 3001;
 
+// Enable CORS for all routes
+app.use(cors());
+
 // Example external service endpoint
-const externalServiceUrl = "<https://api.example.com/data>";
+const externalServiceUrl = "https://jsonplaceholder.typicode.com/posts";
 
 // Function to call the external service
 const fetchData = () => axios.get(externalServiceUrl);
@@ -47,8 +51,17 @@ const options = {
 
 const circuitBreaker = new CircuitBreaker(fetchData, options);
 
+// test endpoint
+app.get("/test", async (req, res) => {
+  try {
+    res.json("Hello Sai, Testing is successfull!!!");
+  } catch (error) {
+    res.status(500).send("Service temporarily unavailable");
+  }
+});
+
 // Endpoint to get data
-app.get("/api/data", async (req, res) => {
+app.get("/api/getPosts", async (req, res) => {
   try {
     const response = await circuitBreaker.fire();
     res.json(response.data);
@@ -58,13 +71,13 @@ app.get("/api/data", async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`Server running on <http://localhost>:${port}`);
+  console.log(`Server running on http://localhost:${port}`);
 });
 ```
 
 ### 2. React Frontend
 
-We'll create a simple React frontend that calls the Node.js backend.
+We'll create a simple `React frontend` that calls the Node.js backend.
 
 ### Installation
 
@@ -77,49 +90,97 @@ npm install axios
 ### App Component (App.js)
 
 ```jsx
-import React, { useEffect, useState } from "react";
-import axios from "axios";
+import React from "react";
+import Posts from "./components/posts/Posts";
+import { CssBaseline, Container } from "@mui/material";
 
 const App = () => {
-  const [data, setData] = useState(null);
-  const [error, setError] = useState(null);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("<http://localhost:3001/api/data>");
-        setData(response.data);
-      } catch (err) {
-        setError("Service temporarily unavailable");
-      }
-    };
-
-    fetchData();
-  }, []);
-
   return (
-    <div>
-      <h1>Data from External Service</h1>
-      {error && <p>{error}</p>}
-      {data ? <pre>{JSON.stringify(data, null, 2)}</pre> : <p>Loading...</p>}
-    </div>
+    <Container>
+      <CssBaseline />
+      <Posts />
+    </Container>
   );
 };
 
 export default App;
 ```
 
+### Posts Component (Post.js)
+
+```jsx
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import {
+  Container,
+  Grid,
+  Card,
+  CardContent,
+  Typography,
+  CardActions,
+  Button,
+} from "@mui/material";
+
+const Posts = () => {
+  const [posts, setPosts] = useState([]);
+
+  useEffect(() => {
+    const fetchPosts = async () => {
+      try {
+        const response = await axios.get(
+          "https://jsonplaceholder.typicode.com/posts"
+        );
+        setPosts(response.data);
+      } catch (error) {
+        console.error("Error fetching posts:", error);
+      }
+    };
+
+    fetchPosts();
+  }, []);
+
+  return (
+    <Container>
+      <Typography variant="h4" gutterBottom>
+        Posts
+      </Typography>
+      <Grid container spacing={3}>
+        {posts.map((post) => (
+          <Grid item xs={12} sm={6} md={4} key={post.id}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5" component="div">
+                  {post.title}
+                </Typography>
+                <Typography variant="body2" color="text.secondary">
+                  {post.body}
+                </Typography>
+              </CardContent>
+              <CardActions>
+                <Button size="small">Learn More</Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </Container>
+  );
+};
+
+export default Posts;
+```
+
 ### 3. AWS Deployment
 
-Deploying this MERN stack application on AWS involves several steps:
+Deploying this `MERN stack` application on AWS involves several steps:
 
-### a. **AWS EC2 Instance for Node.js Backend**
+### `a. **AWS EC2 Instance for Node.js Backend**`
 
 1. Launch an EC2 instance.
 2. SSH into the instance and set up Node.js and your application.
 3. Install necessary dependencies and run the server.
 
-### b. **AWS S3 and CloudFront for React Frontend**
+### `b. **AWS S3 and CloudFront for React Frontend**`
 
 1. Build the React application.
 
@@ -131,10 +192,10 @@ Deploying this MERN stack application on AWS involves several steps:
 3. Configure the S3 bucket for static website hosting.
 4. Use CloudFront to distribute the React app globally.
 
-### c. **API Gateway and Lambda (Optional)**
+### `c. **API Gateway and Lambda (Optional)**`
 
 You could use API Gateway to manage the API endpoints and AWS Lambda functions for the backend, adding more scalability and resilience.
 
 ## Summary
 
-The Circuit Breaker pattern helps to avoid cascading failures and gives time for the system to recover. It is particularly useful in microservices architectures where several services depend on each other. In the MERN stack example, the Node.js backend implements the circuit breaker to manage calls to an external service, while the React frontend handles the responses gracefully. Deploying this setup on AWS involves leveraging various AWS services like EC2, S3, and CloudFront to ensure scalability and reliability.
+> The `Circuit Breaker pattern` helps to avoid cascading failures and gives time for the system to recover. It is particularly useful in microservices architectures where several services depend on each other. In the MERN stack example, the Node.js backend implements the circuit breaker to manage calls to an external service, while the React frontend handles the responses gracefully. Deploying this setup on AWS involves leveraging various AWS services like EC2, S3, and CloudFront to ensure scalability and reliability.
