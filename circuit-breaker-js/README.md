@@ -8,7 +8,7 @@ The Circuit Breaker pattern works like an electrical circuit breaker:
 
 1. **`Closed State`**: Initially, the circuit is in a closed state, where requests flow normally.
 2. **`Open State`**: If the requests fail beyond a threshold, the circuit trips to an open state, where requests are blocked for a certain period.
-3. **`Half-Open State**:` After the timeout period, the circuit goes to a half-open state to test if the underlying problem has been resolved. If the next request succeeds, the circuit returns to the closed state. If it fails, the circuit goes back to the open state.
+3. **`Half-Open State`**: After the timeout period, the circuit goes to a half-open state to test if the underlying problem has been resolved. If the next request succeeds, the circuit returns to the closed state. If it fails, the circuit goes back to the open state.
 
 ## Implementing Circuit Breaker in a MERN Stack Application with AWS
 
@@ -174,13 +174,13 @@ export default Posts;
 
 Deploying this `MERN stack` application on AWS involves several steps:
 
-### `a. **AWS EC2 Instance for Node.js Backend**`
+### `a. AWS EC2 Instance for Node.js Backend`
 
 1. Launch an EC2 instance.
 2. SSH into the instance and set up Node.js and your application.
 3. Install necessary dependencies and run the server.
 
-### `b. **AWS S3 and CloudFront for React Frontend**`
+### `b. AWS S3 and CloudFront for React Frontend`
 
 1. Build the React application.
 
@@ -192,7 +192,7 @@ Deploying this `MERN stack` application on AWS involves several steps:
 3. Configure the S3 bucket for static website hosting.
 4. Use CloudFront to distribute the React app globally.
 
-### `c. **API Gateway and Lambda (Optional)**`
+### `c. API Gateway and Lambda (Optional)`
 
 You could use API Gateway to manage the API endpoints and AWS Lambda functions for the backend, adding more scalability and resilience.
 
