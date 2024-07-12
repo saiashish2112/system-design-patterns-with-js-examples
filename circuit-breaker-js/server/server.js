@@ -10,7 +10,7 @@ const port = 3001;
 app.use(cors());
 
 // Example external service endpoint
-const externalServiceUrl = "https://jsonplaceholder.typicode.com/posts";
+const externalServiceUrl = "https://jsonplaceholder.typicode.com/";
 
 // Function to call the external service
 const fetchData = () => axios.get(externalServiceUrl);
@@ -22,20 +22,36 @@ const options = {
   resetTimeout: 30000, // After 30 seconds, try again
 };
 
-const circuitBreaker = new CircuitBreaker(fetchData, options);
+// Circuit breaker for getPosts
+const circuitBreakerGetPosts = new CircuitBreaker(fetchData, options);
+// Circuit breaker for getComments
+const circuitBreakerGetComments = new CircuitBreaker(fetchData, options);
+
 // test endpoint
 app.get("/test", async (req, res) => {
   try {
-    res.json("Hello Sai, Testing is successfull!!!");
+    res.json("Hello Sai, Testing is successful!!!");
   } catch (error) {
     res.status(500).send("Service temporarily unavailable");
   }
 });
 
-// Endpoint to get data
+// Endpoint to get data for Posts
 app.get("/api/getPosts", async (req, res) => {
   try {
-    const response = await circuitBreaker.fire();
+    const response = await circuitBreakerGetPosts.fire();
+    // console.log(`response1`, response);
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).send("Service temporarily unavailable");
+  }
+});
+
+// Endpoint to get data for Comments
+app.get("/api/getComments", async (req, res) => {
+  try {
+    const response = await circuitBreakerGetComments.fire();
+    console.log(`response2`, response);
     res.json(response.data);
   } catch (error) {
     res.status(500).send("Service temporarily unavailable");

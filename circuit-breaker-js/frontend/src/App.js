@@ -1,5 +1,6 @@
 import React from "react";
 import Posts from "./components/posts/Posts";
+import Comments from "./components/comments/Comments";
 import { CssBaseline, Container } from "@mui/material";
 
 const App = () => {
@@ -7,6 +8,7 @@ const App = () => {
     <Container>
       <CssBaseline />
       <Posts />
+      <Comments />
     </Container>
   );
 };
